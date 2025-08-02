@@ -34,8 +34,11 @@ if file_upload:
     df_instituicao = df.pivot_table(
         index="Data", columns="Instituição", values="Valor", aggfunc="sum"
     )
+
+    # Abas para diferentes visualizações
     tab_data, tab_history, tab_share = exp2.tabs(["Dados", "Histórico", "Distribuição"])
 
+    # Exibe dataframe
     with tab_data:
         # Cria a formatação para todas as colunas com o mesmo padrão
         columns_fmt2 = {
@@ -45,11 +48,18 @@ if file_upload:
         columns_fmt2["Data"] = st.column_config.DateColumn("Data", format="DD/MM/YYYY")
 
         st.dataframe(df_instituicao, column_config=columns_fmt2)
+
+    # Exibe Historico
     with tab_history:
         st.line_chart(df_instituicao)
 
+    # Exibe Distribuição
     with tab_share:
+        # Formata as datas para exibição em pt-BR
         options = [d.strftime("%d/%m/%Y") for d in df_instituicao.index]
+        # Filtro de data
         date_str = st.selectbox("Selecione a data para ver o saldo", options=options)
         date = datetime.strptime(date_str, "%d/%m/%Y").date()
+
+        # Grafico de distribuição
         st.bar_chart(df_instituicao.loc[date])
