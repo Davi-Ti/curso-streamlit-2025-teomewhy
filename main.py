@@ -11,7 +11,12 @@ Espero que voce curta a experiencia da nossa solução para organização financ
 """
 )
 
+# Widgt de upload de dadso
 file_upload = st.file_uploader(label="Faça upload dos dados aqui", type=["csv", "xlsx"])
+
+# Verifica se algum arquivo foi feito upload
 if file_upload:
     df = pd.read_csv(file_upload)
-    st.dataframe(df)
+
+    columns_fmt = {"Valor": st.column_config.NumberColumn("Valor", format="R$ %.2f")}
+    st.dataframe(df, hide_index=True, column_config=columns_fmt)
