@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+from datetime import datetime
 
 st.set_page_config(page_icon="💸", page_title="Finanças")
 
@@ -48,7 +49,7 @@ if file_upload:
         st.line_chart(df_instituicao)
 
     with tab_share:
-        date = st.selectbox(
-            "Selecione a data para ver o saldo", options=df_instituicao.index
-        )
+        options = [d.strftime("%d/%m/%Y") for d in df_instituicao.index]
+        date_str = st.selectbox("Selecione a data para ver o saldo", options=options)
+        date = datetime.strptime(date_str, "%d/%m/%Y").date()
         st.bar_chart(df_instituicao.loc[date])
