@@ -18,7 +18,7 @@ file_upload = st.file_uploader(label="Faça upload dos dados aqui", type=["csv"]
 if file_upload:
     # Leitura dos dados
     df = pd.read_csv(file_upload)
-    df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
+    df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y").dt.date
 
     # Exibição dos dados no App
     exp1 = st.expander("Dados Brutos")
