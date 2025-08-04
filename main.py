@@ -11,12 +11,12 @@ def calc_general_stats(df: pd.DataFrame):
     df_data["Media 12M Diferença Mensal Abs."] = df_data["Diferença Mensal Abs."].rolling(12).mean()
     df_data["Media 24M Diferença Mensal Abs."] = df_data["Diferença Mensal Abs."].rolling(24).mean()
     df_data["Diferença Mensal Rel."] = df_data["Valor"] / df_data["lag_1"] - 1
-    df_data["Evolução 6M Total"] = df_data["Valor"].rolling(6).apply(lambda x: x[-1] - x[0])
-    df_data["Evolução 12M Total"] = df_data["Valor"].rolling(12).apply(lambda x: x[-1] - x[0])
-    df_data["Evolução 24M Total"] = df_data["Valor"].rolling(24).apply(lambda x: x[-1] - x[0])
-    df_data["Evolução 6M Relativa"] = df_data["Valor"].rolling(6).apply(lambda x: x[-1] / x[0] - 1)
-    df_data["Evolução 12M Relativa"] = df_data["Valor"].rolling(12).apply(lambda x: x[-1] / x[0] - 1)
-    df_data["Evolução 24M Relativa"] = df_data["Valor"].rolling(24).apply(lambda x: x[-1] / x[0] - 1)
+    df_data["Evolução 6M Total"] = df_data["Valor"].rolling(6).apply(lambda x: x.iloc[-1] - x.iloc[0])
+    df_data["Evolução 12M Total"] = df_data["Valor"].rolling(12).apply(lambda x: x.iloc[-1] - x.iloc[0])
+    df_data["Evolução 24M Total"] = df_data["Valor"].rolling(24).apply(lambda x: x.iloc[-1] - x.iloc[0])
+    df_data["Evolução 6M Relativa"] = df_data["Valor"].rolling(6).apply(lambda x: x.iloc[-1] / x.iloc[0] - 1)
+    df_data["Evolução 12M Relativa"] = df_data["Valor"].rolling(12).apply(lambda x: x.iloc[-1] / x.iloc[0] - 1)
+    df_data["Evolução 24M Relativa"] = df_data["Valor"].rolling(24).apply(lambda x: x.iloc[-1] / x.iloc[0] - 1)
 
     df_data = df_data.drop("lag_1", axis=1)
 
@@ -133,7 +133,7 @@ if file_upload:
         salario_liq = col2.number_input("Salário Liquido", min_value=0.0, format="%.2f")
 
         valor_inicio = df_stats.loc[data_filtrada]["Valor"]
-        col1.markdown(f"**Valor no Inicio da Meta**: R$ {valor_inicio:.2f}")
+        col1.markdown(f"**Patrimonio no Inicio da Meta**: R$ {valor_inicio:.2f}")
 
         col1_pot, col2_pot = st.columns(2)
 
@@ -144,3 +144,12 @@ if file_upload:
             st.markdown(f"**Potencial Arrecadacao Mes**:\n\n R$ {mensal:.2f}")
         with col2_pot.container(border=True):
             st.markdown(f"**Potencial Arrecadacao Ano**:\n\n R$ {anual:.2f}")
+
+        with st.container(border=True):
+            col1_meta, col2_meta = st.columns(2)
+            with col1_meta:
+                meta_estipulada = st.number_input("Meta Estipulada", min_value=-999999999.99, format="%.2f", value=anual)
+
+            with col2_meta:
+                patrimonio_final = meta_estipulada + valor_inicio
+                st.markdown(f"Patrimonio Estimado pos meta:\n\n R$ {patrimonio_final}")
