@@ -120,3 +120,27 @@ if file_upload:
         rel_cols = ["Diferença Mensal Rel.", "Evolução 6M Relativa", "Evolução 12M Relativa", "Evolução 24M Relativa"]
 
         st.line_chart(df_stats[rel_cols])
+
+    with st.expander("Metas"):
+
+        col1, col2 = st.columns(2)
+        data_inicio_meta = col1.date_input("Inicio de Meta", max_value=df_stats.index.max())
+
+        data_filtrada = df_stats.index[df_stats.index <= data_inicio_meta][-1]
+        custos_fixos = col1.number_input("Custos Fixos", min_value=0.0, format="%.2f")
+
+        salario_bruto = col2.number_input("Salário Bruto", min_value=0.0, format="%.2f")
+        salario_liq = col2.number_input("Salário Liquido", min_value=0.0, format="%.2f")
+
+        valor_inicio = df_stats.loc[data_filtrada]["Valor"]
+        col1.markdown(f"**Valor no Inicio da Meta**: R$ {valor_inicio:.2f}")
+
+        col1_pot, col2_pot = st.columns(2)
+
+        mensal = salario_liq - custos_fixos
+        anual = mensal * 12
+
+        with col1_pot.container(border=True):
+            st.markdown(f"**Potencial Arrecadacao Mes**:\n\n R$ {mensal:.2f}")
+        with col2_pot.container(border=True):
+            st.markdown(f"**Potencial Arrecadacao Ano**:\n\n R$ {anual:.2f}")
